@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -17,6 +17,8 @@ const Popularjobs = () => {
     query: "React developer",
     num_pages: "1",
   });
+
+  const [selectedJob, setSelectedJob] = useState();
 
   return (
     <View style={styles.container}>
@@ -37,9 +39,9 @@ const Popularjobs = () => {
             data={data}
             renderItem={({ item }) => (
               <PopularJobCard
-              // item={item}
-              // selectedJob={selectedJob}
-              // handleCardPress={() => {}}
+                item={item}
+                selectedJob={selectedJob}
+                handleCardPress={() => {}}
               />
             )}
             keyExtractor={(item) => item.job_id}
