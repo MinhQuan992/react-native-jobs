@@ -1,5 +1,10 @@
 import { Stack, useRouter } from "expo-router";
-import { SafeAreaView, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  View,
+} from "react-native";
 import {
   Nearbyjobs,
   Popularjobs,
@@ -7,9 +12,17 @@ import {
   Welcome,
 } from "../components";
 import { COLORS, SIZES, icons, images } from "../constants";
+import { useState } from "react";
 
 const Home = () => {
   const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isWaiting, setIsWaiting] = useState(true);
+
+  // Prevent multi-request in the same time, which causes FREE JSearchAPI to throw 429 error code :))
+  setTimeout(() => {
+    setIsWaiting(false);
+  }, 1000);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
@@ -29,9 +42,21 @@ const Home = () => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ flex: 1, padding: SIZES.medium }}>
-          <Welcome />
+          <Welcome
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            handleClick={() => {
+              if (searchTerm) {
+                router.push(`/search/${searchTerm}`);
+              }
+            }}
+          />
           <Popularjobs />
-          <Nearbyjobs />
+          {isWaiting ? (
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          ) : (
+            <Nearbyjobs />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

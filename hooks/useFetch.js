@@ -7,7 +7,7 @@ const useFetch = (endpoint, query) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const options = {
+  let options = {
     method: "GET",
     url: `https://jsearch.p.rapidapi.com/${endpoint}`,
     headers: {
@@ -19,14 +19,19 @@ const useFetch = (endpoint, query) => {
     },
   };
 
-  const fetchData = async () => {
+  const fetchData = async (overriddenParams) => {
     setIsLoading(true);
+    setData([]);
 
     try {
+      if (overriddenParams) {
+        options = { ...options, params: overriddenParams };
+      }
       const response = await axios.request(options);
       setData(response.data.data);
       setIsLoading(false);
     } catch (error) {
+      console.log(error);
       setError(error);
       alert("There is an error");
     } finally {
@@ -38,9 +43,9 @@ const useFetch = (endpoint, query) => {
     fetchData();
   }, []);
 
-  const refetch = () => {
+  const refetch = (overriddenParams) => {
     setIsLoading(true);
-    fetchData();
+    fetchData(overriddenParams);
   };
 
   return { data, isLoading, error, refetch };
